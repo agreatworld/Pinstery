@@ -44,11 +44,6 @@ public class FlipperOperation : MonoBehaviour {
 	private AnimationCurve speedCurve;
 
 	/// <summary>
-	/// 是否已反弹球
-	/// </summary>
-	private bool hasBoundedBall = false;
-
-	/// <summary>
 	/// 连续按键时间上限
 	/// </summary>
 	private float constantHandleTime = 0.25f;
@@ -69,6 +64,7 @@ public class FlipperOperation : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate() {
+		Debug.Log(transform.rotation.eulerAngles);
 		HandleFlipper();
 	}
 
@@ -101,17 +97,5 @@ public class FlipperOperation : MonoBehaviour {
 		}
 	}
 
-	private void OnCollisionEnter2D(Collision2D collision) {
-		if (!hasBoundedBall && collision.gameObject.CompareTag("Ball")) {
-			//collision.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-			collision.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 200);
-			hasBoundedBall = true;
-		}
-	}
-
-	private void OnCollisionExit2D(Collision2D collision) {
-		if (collision.gameObject.CompareTag("Ball")) {
-			hasBoundedBall = false;
-		}
-	}
+	
 }

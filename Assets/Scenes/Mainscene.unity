@@ -482,6 +482,7 @@ GameObject:
   - component: {fileID: 1280048292}
   - component: {fileID: 1280048291}
   - component: {fileID: 1280048294}
+  - component: {fileID: 1280048295}
   m_Layer: 0
   m_Name: LeftFlipper
   m_TagString: Untagged
@@ -631,3 +632,15 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0.02190888}
   serializedVersion: 2
   m_Radius: 0.6709105
+--- !u!114 &1280048295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1280048287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a2b9dcd38f46264499a7d846243cf2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
