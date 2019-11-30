@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -114,7 +115,8 @@ public class FlipperOperation : MonoBehaviour {
 			}
 			if (Mathf.Abs(transform.rotation.eulerAngles.z - maxRotationZ) > 0.05f) {
 				flipperOmega = flipperOmegaC * speedCurve.Evaluate(pressTimer);
-				transform.rotation = Quaternion.Slerp(transform.rotation, targetQuaternion, Time.fixedDeltaTime * flipperOmega);
+				//transform.rotation = Quaternion.Slerp(transform.rotation, targetQuaternion, Time.fixedDeltaTime * flipperOmega);
+				transform.DORotate(targetQuaternion.eulerAngles, 0.03f);
 			} else {
 				flipperOmega = 0;
 			}
