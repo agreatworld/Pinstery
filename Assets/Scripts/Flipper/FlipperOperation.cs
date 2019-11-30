@@ -16,7 +16,7 @@ public class FlipperOperation : MonoBehaviour {
 	/// <summary>
 	/// 蹼旋转的速度计算参数
 	/// </summary>
-	private float flipperOmegaC = 8.0f;
+	private float flipperOmegaC = 18.0f;
 
 	/// <summary>
 	/// 蹼旋转的角速度
@@ -76,7 +76,6 @@ public class FlipperOperation : MonoBehaviour {
 		speedCurve = new AnimationCurve();
 		speedCurve.AddKey(new Keyframe(0, minCurveValue));
 		speedCurve.AddKey(new Keyframe(maxPressingTime, maxCurveValue));
-		Debug.Log(transform.rotation.z);
 	}
 
 	// Update is called once per frame
