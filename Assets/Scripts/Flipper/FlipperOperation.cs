@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class FlipperOperation : MonoBehaviour {
 	/// <summary>
-	/// 蹼旋转的最大限度（四元数描述）
+	/// 蹼旋转的最大限度
 	/// </summary>
-	private float maxRotationZ = 0.3f;
+	private float maxRotationZ;
 
 	/// <summary>
 	/// 旋转的目标四元数
@@ -63,14 +63,20 @@ public class FlipperOperation : MonoBehaviour {
 	/// </summary>
 	private Quaternion identity;
 
+	/// <summary>
+	/// 操作键
+	/// </summary>
+	private KeyCode key;
+
+
 	// Start is called before the first frame update
 	void Start() {
 		Application.targetFrameRate = 30;
-		targetQuaternion = new Quaternion(0, 0, maxRotationZ, 1.0f);
-		identity = new Quaternion(0, 0, -0.18f, 1.0f);
+		InitParameter();
 		speedCurve = new AnimationCurve();
 		speedCurve.AddKey(new Keyframe(0, minCurveValue));
 		speedCurve.AddKey(new Keyframe(maxPressingTime, maxCurveValue));
+		Debug.Log(transform.rotation.z);
 	}
 
 	// Update is called once per frame
@@ -78,20 +84,36 @@ public class FlipperOperation : MonoBehaviour {
 		HandleFlipper();
 	}
 
+	private void InitParameter() {
+		identity = Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z);
+		if (transform.name == "LeftFlipper") {
+			// 脚本挂在左蹼上
+			maxRotationZ = 30.0f;
+			targetQuaternion = Quaternion.Euler(0, 0, maxRotationZ);
+			key = KeyCode.LeftShift;
+		} else {
+			// 脚本挂在右蹼上
+			maxRotationZ = 150.0f;
+			targetQuaternion = Quaternion.Euler(0, 0, maxRotationZ);
+			key = KeyCode.RightShift;
+		}
+	}
+
 	private void HandleFlipper() {
 
-		if (Input.GetKeyDown(KeyCode.LeftShift)) {
+		if (Input.GetKeyDown(key)) {
 			// 开始计时
 			constantHandleTimer = Time.deltaTime;
 		}
 		if (constantHandleTimer > 0) {
 			constantHandleTimer += Time.deltaTime;
 		}
-		if (Input.GetKey(KeyCode.LeftShift)) {
+		if (Input.GetKey(key)) {
+
 			if (pressTimer < maxPressingTime) {
 				pressTimer += Time.deltaTime;
 			}
-			if (Mathf.Abs(transform.rotation.z - maxRotationZ) > 0.05f) {
+			if (Mathf.Abs(transform.rotation.eulerAngles.z - maxRotationZ) > 0.05f) {
 				flipperOmega = flipperOmegaC * speedCurve.Evaluate(pressTimer);
 				transform.rotation = Quaternion.Slerp(transform.rotation, targetQuaternion, Time.deltaTime * flipperOmega);
 			} else {
@@ -99,7 +121,7 @@ public class FlipperOperation : MonoBehaviour {
 			}
 		} else {
 			pressTimer = 0;
-			//transform.rotation = Quaternion.identity;
+			flipperOmega = 0;
 			if (constantHandleTimer > 0 && constantHandleTimer < constantHandleTime) {
 				// 蹼慢慢恢复
 				transform.rotation = Quaternion.Slerp(transform.rotation, identity, Time.deltaTime * 10);

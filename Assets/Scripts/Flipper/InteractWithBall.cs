@@ -47,7 +47,7 @@ public class InteractWithBall : MonoBehaviour {
 
 	private void OnCollisionEnter2D(Collision2D collision) {
 		if (!hasBoundedBall && collision.gameObject.CompareTag("Ball")) {
-			HitTheBall(collision.GetContact(0).point);
+			HitTheBall(collision.GetContact(0).normal);
 			hasBoundedBall = true;
 		}
 	}
@@ -60,8 +60,7 @@ public class InteractWithBall : MonoBehaviour {
 
 	private void HitTheBall(Vector2 p) {
 		flipperLinearVelocity = flipperOperation.getFlipperOmega() * radius * flipperLinearVelocityC;
-		Vector2 v = new Vector2(p.y, -p.x);
-		ballRigidbody.AddForce(v.normalized * flipperLinearVelocity);
+		ballRigidbody.AddForce(-p * flipperLinearVelocity);
 	}
 
 }
