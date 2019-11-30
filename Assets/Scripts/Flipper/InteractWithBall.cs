@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class InteractWithBall : MonoBehaviour {
 
 	/// <summary>
@@ -59,12 +60,34 @@ public class InteractWithBall : MonoBehaviour {
 	/// </summary>
 	private float length;
 
+	/// <summary>
+	/// 线碰撞器
+	/// </summary>
+	private EdgeCollider2D edgeCollider;
+
+	/// <summary>
+	/// 蹼的原点（以线碰撞器为参照）
+	/// </summary>
+	private Vector2 flipperOrigin;
+
+	/// <summary>
+	/// 蹼的末端（以线碰撞器为参照）
+	/// </summary>
+	private Vector2 flipperTerminal;
+
 	private void Awake() {
 		ball = GameObject.FindGameObjectWithTag("Ball");
 		ballRigidbody = ball.GetComponent<Rigidbody2D>();
 		flipperOperation = GetComponent<FlipperOperation>();
-		length = GetComponent<EdgeCollider2D>().edgeRadius;
-		Debug.Log(length);
+		edgeCollider = GetComponent<EdgeCollider2D>();
+		length = edgeCollider.bounds.size.magnitude;
+		if (transform.name == "LeftFlipper") {
+			flipperOrigin = edgeCollider.bounds.min;
+			flipperTerminal = edgeCollider.bounds.max;
+		} else {
+			flipperOrigin = edgeCollider.bounds.max;
+			flipperTerminal = edgeCollider.bounds.min;
+		}
 	}
 
 	private void FixedUpdate() {
@@ -80,7 +103,7 @@ public class InteractWithBall : MonoBehaviour {
 	private void OnCollisionEnter2D(Collision2D collision) {
 		if (!hasBoundedBall && collision.gameObject.CompareTag("Ball")) {
 			if (canTrigger) {
-				HitTheBall(collision.GetContact(0).normal);
+				HitTheBall(collision.GetContact(0).normal, collision.GetContact(0).point);
 				canTrigger = false;
 			}
 			hasBoundedBall = true;
@@ -93,9 +116,10 @@ public class InteractWithBall : MonoBehaviour {
 		}
 	}
 
-	private void HitTheBall(Vector2 p) {
+	private void HitTheBall(Vector2 normal, Vector2 point) {
+		radius = (point - flipperOrigin).magnitude / length;
 		flipperLinearVelocity = flipperOperation.getFlipperOmega() * radius * flipperLinearVelocityC;
-		ballRigidbody.AddForce(-p * flipperLinearVelocity);
+		ballRigidbody.AddForce(-normal * flipperLinearVelocity);
 	}
 
 }
