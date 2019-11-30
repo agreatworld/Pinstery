@@ -103,19 +103,19 @@ public class FlipperOperation : MonoBehaviour {
 
 		if (Input.GetKeyDown(key)) {
 			// 开始计时
-			constantHandleTimer = Time.deltaTime;
+			constantHandleTimer = Time.fixedDeltaTime;
 		}
 		if (constantHandleTimer > 0) {
-			constantHandleTimer += Time.deltaTime;
+			constantHandleTimer += Time.fixedDeltaTime;
 		}
 		if (Input.GetKey(key)) {
 
 			if (pressTimer < maxPressingTime) {
-				pressTimer += Time.deltaTime;
+				pressTimer += Time.fixedDeltaTime;
 			}
 			if (Mathf.Abs(transform.rotation.eulerAngles.z - maxRotationZ) > 0.05f) {
 				flipperOmega = flipperOmegaC * speedCurve.Evaluate(pressTimer);
-				transform.rotation = Quaternion.Slerp(transform.rotation, targetQuaternion, Time.deltaTime * flipperOmega);
+				transform.rotation = Quaternion.Slerp(transform.rotation, targetQuaternion, Time.fixedDeltaTime * flipperOmega);
 			} else {
 				flipperOmega = 0;
 			}
@@ -124,7 +124,7 @@ public class FlipperOperation : MonoBehaviour {
 			flipperOmega = 0;
 			if (constantHandleTimer > 0 && constantHandleTimer < constantHandleTime) {
 				// 蹼慢慢恢复
-				transform.rotation = Quaternion.Slerp(transform.rotation, identity, Time.deltaTime * 10);
+				transform.rotation = Quaternion.Slerp(transform.rotation, identity, Time.fixedDeltaTime * 10);
 			} else {
 				// 蹼回到原位，Reset 计时器
 				constantHandleTimer = 0;
