@@ -41,7 +41,7 @@ public class InteractWithBall : MonoBehaviour {
 	/// <summary>
 	/// 计算蹼的线速度时用的常数
 	/// </summary>
-	private float flipperLinearVelocityC = 10;
+	private float flipperLinearVelocityC = 20;
 
 	/// <summary>
 	/// 计算蹼的线速度时使用的半径

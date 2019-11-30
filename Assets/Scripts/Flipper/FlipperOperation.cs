@@ -1,7 +1,4 @@
-﻿using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class FlipperOperation : MonoBehaviour {
 	/// <summary>
@@ -75,8 +72,8 @@ public class FlipperOperation : MonoBehaviour {
 		Application.targetFrameRate = 30;
 		InitParameter();
 		speedCurve = new AnimationCurve();
-		speedCurve.AddKey(new Keyframe(0, minCurveValue));
-		speedCurve.AddKey(new Keyframe(maxPressingTime, maxCurveValue));
+		speedCurve.AddKey(new Keyframe(0, maxCurveValue));
+		speedCurve.AddKey(new Keyframe(maxPressingTime, minCurveValue));
 	}
 
 	// Update is called once per frame
@@ -115,8 +112,7 @@ public class FlipperOperation : MonoBehaviour {
 			}
 			if (Mathf.Abs(transform.rotation.eulerAngles.z - maxRotationZ) > 0.05f) {
 				flipperOmega = flipperOmegaC * speedCurve.Evaluate(pressTimer);
-				//transform.rotation = Quaternion.Slerp(transform.rotation, targetQuaternion, Time.fixedDeltaTime * flipperOmega);
-				transform.DORotate(targetQuaternion.eulerAngles, 0.03f);
+				transform.rotation = Quaternion.Slerp(transform.rotation, targetQuaternion, Time.fixedDeltaTime * flipperOmega);
 			} else {
 				flipperOmega = 0;
 			}
