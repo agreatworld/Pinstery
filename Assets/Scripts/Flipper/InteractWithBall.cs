@@ -21,11 +21,6 @@ public class InteractWithBall : MonoBehaviour {
 	private bool canTrigger = true;
 
 	/// <summary>
-	/// 是否已反弹球
-	/// </summary>
-	private bool hasBoundedBall = false;
-
-	/// <summary>
 	/// 球
 	/// </summary>
 	private GameObject ball;
@@ -101,18 +96,11 @@ public class InteractWithBall : MonoBehaviour {
 	}
 
 	private void OnCollisionEnter2D(Collision2D collision) {
-		if (!hasBoundedBall && collision.gameObject.CompareTag("Ball")) {
+		if (collision.gameObject.CompareTag("Ball")) {
 			if (canTrigger) {
 				HitTheBall(collision.GetContact(0).normal, collision.GetContact(0).point);
 				canTrigger = false;
 			}
-			hasBoundedBall = true;
-		}
-	}
-
-	private void OnCollisionExit2D(Collision2D collision) {
-		if (collision.gameObject.CompareTag("Ball")) {
-			hasBoundedBall = false;
 		}
 	}
 
