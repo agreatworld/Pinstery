@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 
 public class InteractWithBall : MonoBehaviour {
@@ -68,12 +69,17 @@ public class InteractWithBall : MonoBehaviour {
 	/// </summary>
 	private Vector2 flipperTerminal;
 
+	/// <summary>
+	/// 蹼的指向
+	/// </summary>
+	private Vector2 flipperDirection;
+
 	private void Awake() {
 		ball = GameObject.FindGameObjectWithTag("Ball");
 		ballRigidbody = ball.GetComponent<Rigidbody2D>();
 		flipperOperation = GetComponent<FlipperOperation>();
 		edgeCollider = GetComponent<EdgeCollider2D>();
-		length = edgeCollider.bounds.size.magnitude;
+		length = GetComponent<SpriteRenderer>().sprite.bounds.extents.x * 2 * 0.8f;
 		if (transform.name == "LeftFlipper") {
 			flipperOrigin = edgeCollider.bounds.min;
 			flipperTerminal = edgeCollider.bounds.max;
@@ -84,6 +90,12 @@ public class InteractWithBall : MonoBehaviour {
 	}
 
 	private void FixedUpdate() {
+		UpdateTimer();
+		UpdateFlipperDirection();
+		//RayTest();
+	}
+
+	private void UpdateTimer() {
 		if (!canTrigger) {
 			timer += Time.fixedDeltaTime;
 		}
@@ -91,6 +103,11 @@ public class InteractWithBall : MonoBehaviour {
 			timer = 0;
 			canTrigger = true;
 		}
+	}
+
+	private void UpdateFlipperDirection() {
+		float theta = transform.rotation.eulerAngles.z;
+
 	}
 
 	private void OnCollisionEnter2D(Collision2D collision) {
@@ -102,10 +119,31 @@ public class InteractWithBall : MonoBehaviour {
 		}
 	}
 
+
 	private void HitTheBall(Vector2 normal, Vector2 point) {
 		radius = (point - flipperOrigin).magnitude / length;
 		flipperLinearVelocity = flipperOperation.getFlipperOmega() * radius * flipperLinearVelocityC;
 		ballRigidbody.AddForce(-normal * flipperLinearVelocity);
+	}
+
+	private void RayTest() {
+		RaycastHit2D hit = Physics2D.Raycast(Vector2.zero, Vector2.zero);
+		float density = 0.3f;
+		int count = (int)(length / density);
+		for (int i = -1; i <= count; i++) {
+			Vector2 origin = new Vector2((i + 1) * density, 0.5f);
+			origin = transform.TransformPoint(origin);
+			float distance = 0.4f;
+			Debug.DrawRay(origin, transform.up * distance, Color.red);
+			hit = Physics2D.Raycast(origin, transform.up, distance);
+			if (hit.collider != null) {
+				if (hit.collider.CompareTag("Ball")) {
+					float force = Vector2.Distance(hit.point, ball.transform.position) * 300 * flipperOperation.pressTimer;
+					ballRigidbody.AddForce(transform.up * force);
+					return;
+				}
+			}
+		}
 	}
 
 }

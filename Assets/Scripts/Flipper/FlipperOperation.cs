@@ -4,7 +4,7 @@ public class FlipperOperation : MonoBehaviour {
 	/// <summary>
 	/// 蹼旋转的最大限度
 	/// </summary>
-	private float maxRotationZ;
+	private float maxRotationZ = 30f;
 
 	/// <summary>
 	/// 旋转的目标四元数
@@ -24,7 +24,7 @@ public class FlipperOperation : MonoBehaviour {
 	/// <summary>
 	/// 按键时长计时器
 	/// </summary>
-	private float pressTimer = 0.0f;
+	public float pressTimer = 0.0f;
 
 	/// <summary>
 	/// 速度曲线达到最大值的按键时间
@@ -66,9 +66,11 @@ public class FlipperOperation : MonoBehaviour {
 	/// </summary>
 	private KeyCode key;
 
+	private Rigidbody2D rb;
 
 	// Start is called before the first frame update
 	void Start() {
+		rb = GetComponent<Rigidbody2D>();
 		Application.targetFrameRate = 30;
 		InitParameter();
 		speedCurve = new AnimationCurve();
@@ -78,22 +80,23 @@ public class FlipperOperation : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate() {
-		HandleFlipper();
+		HandleFlipper1();
+
 	}
 
 	private void InitParameter() {
-		identity = Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z);
 		if (transform.name == "LeftFlipper") {
 			// 脚本挂在左蹼上
-			maxRotationZ = 30.0f;
+			identity = Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z);
 			targetQuaternion = Quaternion.Euler(0, 0, maxRotationZ);
 			key = KeyCode.LeftShift;
 		} else {
 			// 脚本挂在右蹼上
-			maxRotationZ = 150.0f;
-			targetQuaternion = Quaternion.Euler(0, 0, maxRotationZ);
+			identity = Quaternion.Euler(0, 180, transform.rotation.eulerAngles.z);
+			targetQuaternion = Quaternion.Euler(0, 180, maxRotationZ);
 			key = KeyCode.RightShift;
 		}
+
 	}
 
 	private void HandleFlipper() {
@@ -128,6 +131,28 @@ public class FlipperOperation : MonoBehaviour {
 				transform.rotation = identity;
 			}
 		}
+	}
+	private void HandleFlipper1() {
+		if (Input.GetKey(KeyCode.LeftShift)) {
+			if (Clamp(transform.eulerAngles.z) < targetQuaternion.eulerAngles.z) {
+				rb.angularVelocity = 1000;
+			} else {
+				rb.angularVelocity = 0;
+			}
+		} else {
+			if (Clamp(transform.eulerAngles.z) > Clamp(identity.eulerAngles.z)) {
+				rb.angularVelocity = -1000;
+
+			} else {
+				rb.angularVelocity = 0;
+			}
+		}
+
+	}
+
+	private float Clamp(float angle) {
+		angle = (angle + 360) % 360;
+		return angle > 180 ? angle - 360 : angle;
 	}
 
 	public float getFlipperOmega() {
