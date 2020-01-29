@@ -15,9 +15,9 @@ public class Flipper : MonoBehaviour {
 	// Start is called before the first frame update
 	void Start() {
 		rb = GetComponent<Rigidbody2D>();
-		key = transform.name == "LeftFlipper" ? KeyCode.LeftShift : KeyCode.RightShift;
-		positiveVelocity = transform.name == "LeftFlipper" ? 1000f : -1000f;
-		negativeVelocity = transform.name == "LeftFlipper" ? -1000f : 1000f;
+		key = transform.tag == "LeftFlipper" ? KeyCode.LeftShift : KeyCode.RightShift;
+		positiveVelocity = transform.tag == "LeftFlipper" ? 1000f : -1000f;
+		negativeVelocity = transform.tag == "LeftFlipper" ? -1000f : 1000f;
 	}
 
 	// Update is called once per frame
